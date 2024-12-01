@@ -4,6 +4,7 @@ namespace Input;
 class Input{
     public $url;
     public $output;
+    
     function __construct($url){
         $this->url = $url;
         $cookie = "session=" . parse_ini_file('.env')['SESSION'];
@@ -15,9 +16,11 @@ class Input{
         curl_close($ch);
         $this->output = $output;
     }
+
     public function get_input(){
         return $this->output;
     }
+
     public function split_by_newlines(){
         $split = explode("\n", $this->get_input());
         foreach($split as $key => $line){
