@@ -1,5 +1,4 @@
 <?php
-namespace Input;
 
 class Input{
     public $url;
