@@ -1,7 +1,7 @@
 <?php
 include 'src/input.php';
 
-$input = new Input("https://adventofcode.com/2024/day/1/input");
+$input = new Input(1);
 $input = $input->split_by_newlines();
 
 /*

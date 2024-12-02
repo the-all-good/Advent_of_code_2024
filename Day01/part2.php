@@ -1,7 +1,8 @@
 <?php
 include 'src/input.php';
 
-$input = new Input("https://adventofcode.com/2024/day/1/input");
+$input = new Input("1");
+$submit = $input;
 $input = $input->split_by_newlines();
 
 /*
@@ -37,4 +38,4 @@ for($count = 0; $count < count($list1); $count++){
     $total += abs(intval($list1[$count]) * (array_key_exists($list1[$count], $powerList) ? $powerList[$list1[$count]] : 0));
 }
 
-echo $total . "\n";
+echo $submit->submit_answer(1, $total);
