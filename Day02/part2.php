@@ -23,7 +23,6 @@ function remove_bad(array $nums){
             return true;
         }
     }
-    print_r($nums);
     return false;
 }
 
