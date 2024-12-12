@@ -16,7 +16,9 @@ $input = $level->get_input();
 // ............";
 
 $map = new Map($input);
-echo $map->map_nodes();
+$map->show_game();
+echo $map->map_nodes() . "\n";
+
 
 class Map{
     public $map;
@@ -31,6 +33,15 @@ class Map{
         $this->antenna = $this->map_antenna($this->map);
         $this->max_x = count($this->map[0]);
         $this->max_y = count($this->map);
+    }
+
+    public function show_game(){
+        foreach ($this->map as $key => $line) {
+            foreach ($line as $value) {
+                echo $value;
+            }
+            echo "\n";
+        }
     }
 
     public function map_nodes(){
@@ -57,15 +68,17 @@ class Map{
             $nodeb['y'] = $keys[$key]['y'] - $diffy;
             $nodeb['x'] = $keys[$key]['x'] - $diffx;
 
-            if(!($nodea['y'] < 0 || $nodea['y'] > $this->max_y) && !($nodea['x'] < 0 || $nodea['x'] > $this->max_x)){
+            if(!($nodea['y'] < 0 || $nodea['y'] > $this->max_y - 2) && !($nodea['x'] < 0 || $nodea['x'] > $this->max_x -1)){
                 if($this->find_duplicate($nodea['y'], $nodea['x'])){
                     $this->duplicates[] = $nodea;
+                    $this->map[$nodea['y']][$nodea['x']] = "#";
                     $count++;
                 }
             }
-            if(!($nodeb['y'] < 0 || $nodeb['y'] > $this->max_y) && !($nodeb['x'] < 0 || $nodeb['x'] > $this->max_x)){
+            if(!($nodeb['y'] < 0 || $nodeb['y'] > $this->max_y - 2) && !($nodeb['x'] < 0 || $nodeb['x'] > $this->max_x -1)){
                 if($this->find_duplicate($nodeb['y'], $nodeb['x'])){
                     $this->duplicates[] = $nodeb;
+                    $this->map[$nodeb['y']][$nodeb['x']] = "#";
                     $count++;
                 }
             }
