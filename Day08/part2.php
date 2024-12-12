@@ -16,9 +16,8 @@ $input = $level->get_input();
 // ............";
 
 $map = new Map($input);
-$map->show_game();
 echo $map->map_nodes() . "\n";
-
+$map->show_game();
 
 class Map{
     public $map;
@@ -44,12 +43,24 @@ class Map{
         }
     }
 
-    public function map_nodes(){
-        $result = 0;
-        foreach($this->antenna as $identifier => $keys){
-            $result += $this->add_locs($keys);
+    public function count_nodes(){
+        $count = 0;
+        foreach($this->map as $y => $line){
+            foreach($line as $x => $char){
+                if($char === '.'){
+                    continue;
+                }
+                $count++;
+            }
         }
-        return $result;
+        return $count;
+    }
+
+    public function map_nodes(){
+        foreach($this->antenna as $identifier => $keys){
+            $this->add_locs($keys);
+        }
+        return $this->count_nodes();
     }
 
     public function add_locs($keys){
@@ -63,26 +74,44 @@ class Map{
                 continue;
             }
             [$diffy, $diffx] = $this->diff_antenna($keys[0], $keys[$key]);
-            $nodea['y'] = $keys[0]['y'] + $diffy;
-            $nodea['x'] = $keys[0]['x'] + $diffx;
-            $nodeb['y'] = $keys[$key]['y'] - $diffy;
-            $nodeb['x'] = $keys[$key]['x'] - $diffx;
-
-            if(!($nodea['y'] < 0 || $nodea['y'] > $this->max_y - 2) && !($nodea['x'] < 0 || $nodea['x'] > $this->max_x -1)){
-                if($this->find_duplicate($nodea['y'], $nodea['x'])){
-                    $this->duplicates[] = $nodea;
-                    $count++;
-                }
-            }
-            if(!($nodeb['y'] < 0 || $nodeb['y'] > $this->max_y - 2) && !($nodeb['x'] < 0 || $nodeb['x'] > $this->max_x -1)){
-                if($this->find_duplicate($nodeb['y'], $nodeb['x'])){
-                    $this->duplicates[] = $nodeb;
-                    $count++;
-                }
-            }
+            $count += $this->create_nodes($keys[0], ['y' => $diffy, 'x' => $diffx]);
+            $count += $this->create_nodes($keys[$key], ['y' => $diffy, 'x' => $diffx], false);
         }
         unset($keys[0]);
         $count += $this->add_locs(array_values($keys));
+        return $count;
+    }
+
+    public function inbounds($node){
+        if(!($node['y'] < 0 || $node['y'] > $this->max_y - 2) && !($node['x'] < 0 || $node['x'] > $this->max_x -1)){
+            $this->duplicates = $node;
+            $this->map[$node['y']][$node['x']] = "#";
+
+            return true;
+        }
+        return false;
+    }
+
+    public function create_nodes(array $start, array $diff, bool $increment = true){
+
+        $count = 0;
+        if($increment){
+            $node['x'] = $start['x'] + $diff['x'];
+            $node['y'] = $start['y'] + $diff['y'];
+        }else{
+            $node['x'] = $start['x'] - $diff['x'];
+            $node['y'] = $start['y'] - $diff['y'];
+        }
+        while($this->inbounds($node)){
+            $count++;
+            if($increment){
+                $node['x'] += $diff['x'];
+                $node['y'] += $diff['y'];
+            }else{
+                $node['x'] -= $diff['x'];
+                $node['y'] -= $diff['y'];
+            }
+        }
         return $count;
     }
 
