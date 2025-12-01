@@ -2,7 +2,7 @@
 
 class Input{
     public $output;
-    public $url = "https://adventofcode.com/2024/day/";
+    public $url = "https://adventofcode.com/2025/day/";
     public $day;
     private $cookie;
     

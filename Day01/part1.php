@@ -2,28 +2,48 @@
 include 'src/input.php';
 
 $input = new Input(1);
-$input = $input->split_by_newlines();
+$lines = $input->split_by_newlines();
+// $input = "L68
+// L30
+// R48
+// L5
+// R60
+// L55
+// L1
+// L99
+// R14
+// L82";
+// $lines = explode("\n", $input);
+$position = (int) 50;
+$count = 0;
 
-/*
-    Seperate the 2 lists into arrays
-    Sort arrays
-    Compare array diffs
-*/
-$list1 = [];
-$list2 = [];
-$total = 0;
+foreach ($lines as $line) {
+    preg_match("/(?<dir>[L,R])(?<count>\d{1,4})/", $line, $matches);
 
-foreach($input as $line){
-    $nums = explode('   ',$line);
-    $list1[] = $nums[0];
-    $list2[] = $nums[1];
+    if (! isset($matches['dir'])) {
+        var_dump($matches);
+    }
+
+    if ($matches['dir'] == "L") {
+        $position -= (int) $matches['count'];
+    }
+
+    if ($matches['dir'] == "R") {
+        $position += (int) $matches['count'];
+    }
+
+    if ($position > 100) {
+        $position %= 100;
+    }
+
+    if ($position < 0) {
+        $position %= -100;
+    }
+
+    if ($position == 0 || $position == 100) {
+        $count++;
+    }
 }
 
-sort($list1, SORT_NUMERIC);
-sort($list2, SORT_NUMERIC);
 
-for($count = 0; $count < count($list1); $count++){
-    $total += abs(intval($list1[$count]) - intval($list2[$count]));
-}
-
-echo $total . "\n";
+echo "$count \n";
